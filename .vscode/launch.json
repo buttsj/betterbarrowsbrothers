@@ -13,10 +13,10 @@
         },
         {
             "type": "java",
-            "name": "Launch ExamplePluginTest",
+            "name": "Launch BetterBarrowsPluginTest",
             "request": "launch",
             "mainClass": "com.betterbarrows.BetterBarrowsPluginTest",
-            "projectName": "example",
+            "projectName": "Better-Barrows-Brothers",
             "vmArgs": "-ea"
         }
     ]

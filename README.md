@@ -1,2 +1,2 @@
-# Example
-An example greeter plugin
+# Better Barrows Brothers
+An enhancement to the base Barrows Brothers plug-in
