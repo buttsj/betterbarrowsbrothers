@@ -30,18 +30,30 @@ package com.betterbarrowsbrothers;
 import com.google.common.collect.ImmutableList;
 import com.google.inject.Provides;
 import java.time.temporal.ChronoUnit;
+import java.util.Set;
+import java.util.HashSet;
+import java.util.List;
+import java.util.ArrayList;
 import javax.inject.Inject;
 import lombok.Getter;
+import lombok.Setter;
+import lombok.AccessLevel;
+import net.runelite.api.Actor;
 import net.runelite.api.ChatMessageType;
 import net.runelite.api.Client;
 import net.runelite.api.GameState;
+import net.runelite.api.Hitsplat;
+import net.runelite.api.HitsplatID;
 import net.runelite.api.InventoryID;
 import net.runelite.api.Item;
 import net.runelite.api.ItemContainer;
+import net.runelite.api.NPC;
 import net.runelite.api.Player;
 import net.runelite.api.SpriteID;
+import net.runelite.api.events.ActorDeath;
 import net.runelite.api.events.BeforeRender;
 import net.runelite.api.events.GameStateChanged;
+import net.runelite.api.events.HitsplatApplied;
 import net.runelite.api.events.WidgetClosed;
 import net.runelite.api.events.WidgetLoaded;
 import net.runelite.api.widgets.Widget;
@@ -54,6 +66,8 @@ import net.runelite.client.chat.QueuedMessage;
 import net.runelite.client.config.ConfigManager;
 import net.runelite.client.eventbus.Subscribe;
 import net.runelite.client.events.ConfigChanged;
+import net.runelite.api.events.NpcDespawned;
+import net.runelite.api.events.NpcSpawned;
 import net.runelite.client.game.ItemManager;
 import net.runelite.client.game.SpriteManager;
 import net.runelite.client.plugins.Plugin;
@@ -81,6 +95,13 @@ public class BetterBarrowsPlugin extends Plugin
 	private static final long PRAYER_DRAIN_INTERVAL_MS = 18200;
 	private static final int CRYPT_REGION_ID = 14231;
 	private static final int BARROWS_REGION_ID = 14131;
+	private final Set<NPC> taggedNpcs = new HashSet<>();
+	private final Set<NPC> killedSkeletons = new HashSet<>();
+	private final Set<NPC> killedCryptRats = new HashSet<>();
+	private final Set<NPC> killedBloodworms = new HashSet<>();
+	private final Set<NPC> killedCryptSpiders = new HashSet<>();
+	private final Set<NPC> killedGiantCryptRats = new HashSet<>();
+	private final Set<NPC> killedGiantCryptSpiders = new HashSet<>();
 
 	private LoopTimer barrowsPrayerDrainTimer;
 
@@ -130,6 +151,8 @@ public class BetterBarrowsPlugin extends Plugin
 	@Override
 	protected void shutDown()
 	{
+		targets.clear();
+		taggedNpcs.clear();
 		overlayManager.remove(barrowsOverlay);
 		overlayManager.remove(brotherOverlay);
 		puzzleAnswer = null;
@@ -172,6 +195,9 @@ public class BetterBarrowsPlugin extends Plugin
 			{
 				startPrayerDrainTimer();
 			}
+
+			targets.clear();
+			taggedNpcs.clear();
 		}
 	}
 
@@ -251,6 +277,29 @@ public class BetterBarrowsPlugin extends Plugin
 		if (widgetClosed.getGroupId() == WidgetID.BARROWS_PUZZLE_GROUP_ID)
 		{
 			puzzleAnswer = null;
+		}
+	}
+
+	@Subscribe
+	public void onHitsplatApplied(HitsplatApplied hitsplatApplied)
+	{
+		Actor actor = hitsplatApplied.getActor();
+		Hitsplat hitsplat = hitsplatApplied.getHitsplat();
+		if (hitsplat.getHitsplatType() == HitsplatID.DAMAGE_ME && targets.contains(actor))
+		{
+			// If the actor is in highlightedTargets it must be an NPC and also a task assignment
+			taggedNpcs.add((NPC) actor);
+		}
+	}
+
+	@Subscribe
+	public void onActorDeath(ActorDeath actorDeath)
+	{
+		Actor actor = actorDeath.getActor();
+		if (taggedNpcs.contains(actor))
+		{
+			//log.debug("Tagged NPC {} has died", actor.getName());
+			//++taggedNpcsDiedThisTick;
 		}
 	}
 

@@ -47,7 +47,7 @@ import net.runelite.client.ui.overlay.components.LineComponent;
 class BetterBarrowsBrotherSlainOverlay extends OverlayPanel
 {
 	private static final DecimalFormat REWARD_POTENTIAL_FORMATTER = new DecimalFormat("##0.00%");
-
+	private static final DecimalFormat MONSTERS_SLAIN_FORMATTER = new DecimalFormat("##0");
 	private final Client client;
 
 	@Inject
@@ -87,6 +87,42 @@ class BetterBarrowsBrotherSlainOverlay extends OverlayPanel
 			.left("Potential")
 			.right(REWARD_POTENTIAL_FORMATTER.format(rewardPotential / 1012f))
 			.rightColor(rewardPotential >= 756 && rewardPotential < 881 ? Color.GREEN : rewardPotential < 631 ? Color.WHITE : Color.YELLOW)
+			.build());
+
+		panelComponent.getChildren().add(LineComponent.builder()
+			.left("Crypt rat")
+			.right(MONSTERS_SLAIN_FORMATTER.format(0))
+			.rightColor(Color.WHITE)
+			.build());
+
+		panelComponent.getChildren().add(LineComponent.builder()
+			.left("Bloodworm")
+			.right(MONSTERS_SLAIN_FORMATTER.format(0))
+			.rightColor(Color.WHITE)
+			.build());
+
+		panelComponent.getChildren().add(LineComponent.builder()
+			.left("Crypt spider")
+			.right(MONSTERS_SLAIN_FORMATTER.format(0))
+			.rightColor(Color.WHITE)
+			.build());
+
+		panelComponent.getChildren().add(LineComponent.builder()
+			.left("Giant crypt rat")
+			.right(MONSTERS_SLAIN_FORMATTER.format(0))
+			.rightColor(Color.WHITE)
+			.build());
+
+		panelComponent.getChildren().add(LineComponent.builder()
+			.left("Skeleton")
+			.right(MONSTERS_SLAIN_FORMATTER.format(0))
+			.rightColor(Color.WHITE)
+			.build());
+
+		panelComponent.getChildren().add(LineComponent.builder()
+			.left("Giant crypt spider")
+			.right(MONSTERS_SLAIN_FORMATTER.format(0))
+			.rightColor(Color.WHITE)
 			.build());
 
 		return super.render(graphics);

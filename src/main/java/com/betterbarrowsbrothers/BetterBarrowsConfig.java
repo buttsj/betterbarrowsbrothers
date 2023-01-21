@@ -100,5 +100,16 @@ public interface BetterBarrowsConfig extends Config
 	{
 		return true;
 	}
+
+	@ConfigItem(
+		keyName = "showKilledMonsters",
+		name = "Show Killed Crypt Monsters",
+		description = "Configure whether or not a display of killed monsters in the Barrows crypt should be displayed",
+		position = 7
+	)
+	default boolean showKilledMonsters()
+	{
+		return true;
+	}
 }
 
